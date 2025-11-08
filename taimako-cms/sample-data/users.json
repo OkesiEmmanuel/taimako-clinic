@@ -1,0 +1,24 @@
+
+[
+  {
+    "id": "staff-1",
+    "email": "dr.adamu@example.com",
+    "fullName": "Dr. Adamu",
+    "role": "doctor",
+    "isActive": true
+  },
+  {
+    "id": "reception-1",
+    "email": "reception@example.com",
+    "fullName": "Amina Reception",
+    "role": "reception",
+    "isActive": true
+  },
+  {
+    "id": "patient-1",
+    "email": "patient.one@example.com",
+    "fullName": "Mary Patient",
+    "role": "patient",
+    "isActive": true
+  }
+]

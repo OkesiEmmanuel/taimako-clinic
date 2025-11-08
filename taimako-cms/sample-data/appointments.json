@@ -1,0 +1,14 @@
+
+[
+  {
+    "id": "appt-1",
+    "patientId": "patient-1",
+    "staffId": "staff-1",
+    "startAt": "2025-11-10T09:00:00.000Z",
+    "endAt": "2025-11-10T09:30:00.000Z",
+    "status": "confirmed",
+    "type": "onsite",
+    "requiresPrepayment": false,
+    "amountDue": 0
+  }
+]
