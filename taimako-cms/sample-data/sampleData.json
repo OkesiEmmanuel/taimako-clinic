@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "age": "34",
+    "gender": "Male",
+    "phone": "09012345678",
+    "dob": "1991-03-15",
+    "address": "123 Clinic Street"
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "age": "28",
+    "gender": "Female",
+    "phone": "08098765432",
+    "dob": "1997-06-10",
+    "address": "45 Health Avenue"
+  }
+]

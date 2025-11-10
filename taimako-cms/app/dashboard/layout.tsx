@@ -3,6 +3,8 @@
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import { motion } from 'framer-motion';
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,6 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           className="p-6 overflow-y-auto"
         >
           {children}
+          <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
         </motion.main>
       </div>
     </div>
