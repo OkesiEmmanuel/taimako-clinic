@@ -17,7 +17,7 @@ export default function HeroSection() {
         <p className="max-w-2xl mx-auto mb-6 text-lg text-blue-100">
           At Taimako Private Clinic & Maternity, we provide quality healthcare for families, women, and children.
         </p>
-        <Button href="#contact" label="Book an Appointment" />
+        <Button href="/appointments/new" label="Book an Appointment" />
       </motion.div>
     </section>
   )

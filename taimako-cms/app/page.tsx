@@ -74,7 +74,7 @@ import TestimonialsSection from "../components/TestimonialsSection";
 
 export default function Home() {
   return (
-    <>
+    <div className="bg-white">
       <HeroSection />
       <AboutSection />
       <ServicesSection />
@@ -82,6 +82,6 @@ export default function Home() {
       <TestimonialsSection />
       <ContactSection />
       <Footer />
-    </>
+    </div>
   )
 }
