@@ -1,23 +1,23 @@
 'use client'
 
-import { Patient, PatientService } from '@/services'
+import { Staff, StaffService } from '@/services/StaffService'
 import { useMemo, useState } from 'react'
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa'
 
-interface PatientTableProps {
-  patients: Patient[]
-  service: PatientService
-  onEdit: (patient: Patient) => void
+interface StaffTableProps {
+  staff: Staff[]
+  service: StaffService
+  onEdit: (staff: Staff) => void
   defaultRowsPerPage?: number
 }
 
-export default function PatientTable({
-  patients,
+export default function StaffTable({
+  staff,
   service,
   onEdit,
   defaultRowsPerPage = 10,
-}: PatientTableProps) {
-  const [sortBy, setSortBy] = useState<keyof Patient | null>(null)
+}: StaffTableProps) {
+  const [sortBy, setSortBy] = useState<keyof Staff | null>(null)
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = useState(1)
   const [search, setSearch] = useState('')
@@ -26,7 +26,7 @@ export default function PatientTable({
   const [jumpPage, setJumpPage] = useState('')
 
   const filtered = useMemo(() => {
-    return patients
+    return staff
       .filter((p) => {
         const matchGender = filterGender === 'All' || p.gender === filterGender
         const q = search.toLowerCase().trim()
@@ -44,12 +44,12 @@ export default function PatientTable({
         }
         return 0
       })
-  }, [patients, sortBy, sortDir, search, filterGender])
+  }, [staff, sortBy, sortDir, search, filterGender])
 
   const totalPages = Math.ceil(filtered.length / rowsPerPage)
   const pageData = filtered.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
 
-  const handleSort = (column: keyof Patient) => {
+  const handleSort = (column: keyof Staff) => {
     if (sortBy === column) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
     } else {
@@ -58,7 +58,7 @@ export default function PatientTable({
     }
   }
 
-  const renderSortIcon = (column: keyof Patient) => {
+  const renderSortIcon = (column: keyof Staff) => {
     if (!sortBy || sortBy !== column) return <FaSort className="inline-block ml-1 text-gray-400" />
     return sortDir === 'asc' ? (
       <FaSortUp className="inline-block ml-1 text-gray-600" />
@@ -67,7 +67,7 @@ export default function PatientTable({
     )
   }
 
-  if (!patients.length)
+  if (!staff.length)
     return (
       <div className="p-4 bg-white rounded shadow border">
         <p className="text-gray-500">No patients found.</p>
@@ -132,12 +132,12 @@ export default function PatientTable({
               {['name', 'gender', 'age', 'phone', 'dob'].map((col) => (
                 <th
                   key={col}
-                  onClick={() => handleSort(col as keyof Patient)}
+                  onClick={() => handleSort(col as keyof Staff)}
                   className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer select-none hover:text-gray-900"
                 >
                   <span className="flex items-center">
                     {col.charAt(0).toUpperCase() + col.slice(1)}
-                    {renderSortIcon(col as keyof Patient)}
+                    {renderSortIcon(col as keyof Staff)}
                   </span>
                 </th>
               ))}
@@ -145,31 +145,31 @@ export default function PatientTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {pageData.map((p) => (
+            {pageData.map((s) => (
               <tr
-                key={p.id}
+                key={s.id}
                 className="hover:bg-gray-50 transition-colors duration-150 ease-in-out"
               >
-                <td className="px-4 py-3 text-gray-800">{p.name}</td>
-                <td className="px-4 py-3 text-gray-800">{p.gender}</td>
-                <td className="px-4 py-3 text-gray-800">{p.age}</td>
-                <td className="px-4 py-3 text-gray-800">{p.phone}</td>
-                <td className="px-4 py-3 text-gray-800">{p.dob}</td>
+                <td className="px-4 py-3 text-gray-800">{s.name}</td>
+                <td className="px-4 py-3 text-gray-800">{s.gender}</td>
+                <td className="px-4 py-3 text-gray-800">{s.age}</td>
+                <td className="px-4 py-3 text-gray-800">{s.phone}</td>
+                <td className="px-4 py-3 text-gray-800">{s.role}</td>
                 <td className="px-4 py-3 flex flex-wrap gap-2">
                   <button
-                    onClick={() => onEdit(p)}
+                    onClick={() => onEdit(s)}
                     className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={() => service.deletePatient(p.id)}
+                    onClick={() => service.deleteStaff(s.id)}
                     className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
                   >
                     Delete
                   </button>
                   <button
-                    onClick={() => service.printPatient(p)}
+                    onClick={() => service.printStaff(s)}
                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition"
                   >
                     Print

@@ -1,7 +1,6 @@
 // services/patientService.ts
 import { supabase } from '@/lib/supabaseClient'
 import { toast } from 'react-toastify'
-
 import { PatientFormData } from '@/validation/PatientValidation'
 import { cachePatients, readCachedPatients, processQueue, OfflineOp, enqueueOp } from '@/lib/offlineSync'
 
@@ -15,7 +14,7 @@ export interface Patient extends PatientFormData {
   address?: string
 }
 
-/** Type guard to ensure object is Patient */
+// Type guard to validate objects
 function isPatient(obj: any): obj is Patient {
   return (
     obj &&
@@ -33,23 +32,41 @@ export class PatientService {
 
   constructor(private onUpdate: (patients: Patient[], fallback: boolean) => void) {}
 
-  /** Load patients from server or fallback */
+  /** Load patients: Supabase -> Cache -> Sample JSON */
   async loadPatients() {
     try {
       if (!supabase) throw new Error('Supabase unavailable')
       const { data, error } = await supabase
-        .from('patients')
+        .from<'patients', Patient>('patients')
         .select('*')
         .order('created_at', { ascending: false })
 
       if (error) throw error
       this.patients = data ?? []
+
       this.fallback = false
       cachePatients(this.patients)
     } catch (err) {
       console.warn('Using fallback cache/sample data', err)
+
+      // 1️⃣ Try cache
       const cache = readCachedPatients() as Patient[] | null
-      this.patients = cache ?? []
+      if (cache?.length) {
+        this.patients = cache
+      } else {
+        // 2️⃣ Try static sample JSON
+        try {
+          const module = await import('@/sample-data/patients.json')
+          const raw: any[] = module.default
+          this.patients = raw
+            .filter(isPatient)
+            .map((p) => ({ ...p, gender: p.gender as 'Male' | 'Female' | 'Other' }))
+        } catch (e) {
+          console.error('Failed to load sample data', e)
+          this.patients = []
+        }
+      }
+
       this.fallback = true
       toast.info('Offline/fallback data loaded.')
     } finally {
@@ -81,14 +98,13 @@ export class PatientService {
               this.patients = this.patients.filter((p) => p.id !== record.id)
               break
           }
+
           this.notifyUpdate()
         }
       )
       .subscribe()
 
-    return () => {
-      supabase.removeChannel(channel)
-    }
+    return () => supabase.removeChannel(channel)
   }
 
   /** Add or update patient */
@@ -156,11 +172,8 @@ export class PatientService {
   exportCSV(filtered: Patient[]) {
     const csv =
       'Name,Gender,Age,Phone,DOB,Address\n' +
-      filtered
-        .map(
-          (p) => `${p.name},${p.gender},${p.age},${p.phone},${p.dob},"${p.address || ''}"`
-        )
-        .join('\n')
+      filtered.map((p) => `${p.name},${p.gender},${p.age},${p.phone},${p.dob},"${p.address ?? ''}"`).join('\n')
+
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -170,39 +183,37 @@ export class PatientService {
     toast.success('Exported CSV.')
   }
 
-  /** Print one patient */
+  /** Print single */
   printPatient(p: Patient) {
     const win = window.open('', '', 'width=700,height=500')
     if (!win) return
-    const html = `<pre>${JSON.stringify(p, null, 2)}</pre>`
-    win.document.write(html)
+    win.document.write(`<html><body><pre>${JSON.stringify(p, null, 2)}</pre></body></html>`)
     win.document.close()
     win.print()
   }
 
-  /** Print all patients */
+  /** Print all */
   printAll(filtered: Patient[]) {
     const win = window.open('', '', 'width=900,height=700')
     if (!win) return
-    const html = `<pre>${JSON.stringify(filtered, null, 2)}</pre>`
-    win.document.write(html)
+    win.document.write(`<html><body><pre>${JSON.stringify(filtered, null, 2)}</pre></body></html>`)
     win.document.close()
     win.print()
   }
 
-  /** Sync queued operations */
+  /** Sync offline queue */
   async syncQueue() {
     const res = await processQueue()
     if (res.successCount > 0) await this.loadPatients()
   }
 
-  /** Add operation to offline queue */
+  /** Queue offline operation */
   private queueOp(op: OfflineOp['op'], data: any) {
     const record = op === 'delete' ? { op, id: data.id } : { op, record: data }
     enqueueOp(record)
   }
 
-  /** Notify page of updated patient list */
+  /** Notify table/component */
   private notifyUpdate() {
     this.onUpdate(this.patients, this.fallback)
   }

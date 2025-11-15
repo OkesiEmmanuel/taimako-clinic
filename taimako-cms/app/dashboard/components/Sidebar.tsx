@@ -12,7 +12,7 @@ export default function Sidebar() {
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Patients', href: '/dashboard/patients', icon: Users },
     { name: 'Staff', href: '/dashboard/staff', icon: UserCog },
-    { name: 'Leave mgt', href: '/dashboard/leave', icon: UserCog },
+    { name: 'Leave mgt', href: '/dashboard/staff/leave', icon: UserCog },
 
   ];
 

@@ -48,6 +48,14 @@ export function readCachedPatients(): any[] | null {
     return null
   }
 }
+/** Staff cache helpers */
+export function cacheStaff(staff: any[]) {
+  localStorage.setItem('clinic_staff_cache_v1', JSON.stringify(staff))
+}
+export function readCachedStaff(): any[] | null {
+  const raw = localStorage.getItem('clinic_staff_cache_v1')
+  return raw ? JSON.parse(raw) : null
+}
 
 /**
  * processQueue: attempt to flush queued operations to Supabase
@@ -100,4 +108,6 @@ export async function processQueue(): Promise<{
     toast.success(`Synced ${successCount} operation(s) to server.`)
   }
   return { successCount, remaining: remaining.length }
+
+  
 }

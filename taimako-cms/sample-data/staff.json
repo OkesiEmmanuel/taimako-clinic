@@ -1,0 +1,25 @@
+[
+  {
+    "id": "1",
+    "name": "Okesi Emmanuel",
+    "email": "john.doe@example.com",
+    "gender": "Male",
+    "phone": "09012345678",
+    "role": "Admin",
+    "department": "Administration",
+    "address": "123 Clinic Street",
+    "age": "34"
+  },
+  {
+    "id": "2",
+    "name": "Okesi Friday",
+    "email": "john.doe@example.com",
+    "gender": "Male",
+    "phone": "09012345678",
+    "role": "Admin",
+    "department": "Administration",
+    "address": "123 Clinic Street",
+    "age": "34"
+  }
+]
+ 

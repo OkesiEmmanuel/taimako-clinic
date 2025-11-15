@@ -30,14 +30,14 @@ export default function PatientsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">Clinic Patients</h1>
+        <h1 className="text-2xl font-semibold text-gray-700">Clinic Patients</h1>
         <OfflineStatus />
       </div>
 
       {/* Search and filter */}
       <div className="flex gap-2 items-center">
         <input
-          className="border rounded px-3 py-1"
+          className="border border-gray-700 text-gray-700 bg-white rounded px-3 py-1"
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -45,7 +45,7 @@ export default function PatientsPage() {
         <select
           value={filterGender}
           onChange={(e) => setFilterGender(e.target.value)}
-          className="border rounded px-3 py-1"
+          className="border  text-gray-700 bg-white rounded px-3 py-1"
         >
           <option value="All">All genders</option>
           <option value="Male">Male</option>
@@ -62,14 +62,14 @@ export default function PatientsPage() {
         />
       )}
 
+     
       {/* Patient Table */}
       {service && (
         <PatientTable
           patients={patients}
           service={service}
-          search={search}
-          filterGender={filterGender}
-          onEdit={(p:any) => setSelected(p)}
+          onEdit={(p) => setSelected(p)}
+          defaultRowsPerPage={10} // optional, default is 10
         />
       )}
     </div>
