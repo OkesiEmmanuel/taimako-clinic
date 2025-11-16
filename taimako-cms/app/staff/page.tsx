@@ -2,13 +2,14 @@
 
 import { Staff } from '@/services/StaffService'
 import { useEffect, useState } from 'react'
-
 import { toast } from 'react-toastify'
 
 interface StaffFormProps {
   selected?: Staff
-  onSubmit: (data: Staff) => void
+  onSubmit: (data: Staff, password?: string) => void
 }
+
+const roles = ['doctor', 'nurse', 'admin', 'reception'] as const
 
 export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
   const [staff, setStaff] = useState<Staff>({
@@ -18,10 +19,12 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
     gender: selected?.gender || 'Male',
     email: selected?.email || '',
     phone: selected?.phone || '',
-    role: selected?.role || 'Admin',
+    role: selected?.role || 'admin',
     department: selected?.department || '',
     address: selected?.address || '',
   })
+
+  const [password, setPassword] = useState('')
 
   useEffect(() => {
     if (selected) setStaff(selected)
@@ -37,7 +40,11 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
       toast.error('Name, Email, and Role are required.')
       return
     }
-    onSubmit(staff)
+    if (!selected && !password) {
+      toast.error('Password is required for new staff.')
+      return
+    }
+    onSubmit(staff, password)
     setStaff({
       id: undefined,
       name: '',
@@ -45,16 +52,17 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
       gender: 'Male',
       email: '',
       phone: '',
-      role: 'Admin',
+      role: 'admin',
       department: '',
       address: '',
     })
+    setPassword('')
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-50 p-4 bg-gray-50 border rounded-lg shadow-sm space-y-4  w-full"
+      className="bg-gray-50 p-4 border rounded-lg shadow-sm space-y-4 w-full"
     >
       <h2 className="text-lg font-semibold text-gray-700">
         {selected ? 'Edit Staff' : 'Add Staff'}
@@ -80,6 +88,18 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
+
+        {!selected && (
+          <div>
+            <label className="block text-gray-600 mb-1">Password *</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-gray-600 mb-1">Phone</label>
@@ -116,12 +136,17 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
 
         <div>
           <label className="block text-gray-600 mb-1">Role *</label>
-          <input
-            type="text"
+          <select
             value={staff.role}
             onChange={(e) => handleChange('role', e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2"
-          />
+          >
+            {roles.map((r) => (
+              <option key={r} value={r}>
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

@@ -4,8 +4,9 @@
 import { motion } from 'framer-motion';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Sidebar from '../../components/Sidebar';
-import Navbar from '../../components/Navbar';
+
+import Navbar from '../../dashboard/components/Navbar';
+import Sidebar from '../components/StaffSidebar';
 
 export default function StaffDashboardLayout({ children }: { children: React.ReactNode }) {
   return (

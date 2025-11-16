@@ -1,108 +1,158 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import OfflineStatus from '@/components/ui/OfflineStatus'
-import StaffForm from './new/page'
-import { Staff, StaffService } from '@/services/StaffService'
-import StaffTable from './components/StaffTable'
+import { Staff } from '@/services/StaffService'
+import { useEffect, useState } from 'react'
 
-export default function StaffPage() {
-  const [staffList, setStaffList] = useState<Staff[]>([])
-  const [selected, setSelected] = useState<Staff | null>(null)
-  const [search, setSearch] = useState('')
-  const [filterRole, setFilterRole] = useState('All')
-  const [service, setService] = useState<StaffService | null>(null)
+import { toast } from 'react-toastify'
 
-  // Initialize service and load staff
+interface StaffFormProps {
+  selected?: Staff
+  onSubmit: (data: Staff) => void
+}
+
+export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
+  const [staff, setStaff] = useState<Staff>({
+    id: selected?.id,
+    name: selected?.name || '',
+    age: selected?.age || '',
+    gender: selected?.gender || 'Male',
+    email: selected?.email || '',
+    phone: selected?.phone || '',
+    role: selected?.role || 'Admin',
+    department: selected?.department || '',
+    address: selected?.address || '',
+  })
+
   useEffect(() => {
-    const srv = new StaffService((updated) => setStaffList(updated))
-    setService(srv)
-    srv.loadStaff()
-    const unsub = srv.subscribeRealtime?.() // optional if you implement real-time
-    const interval = setInterval(() => srv.syncQueue(), 60_000)
-    window.addEventListener('online', () => srv.syncQueue())
+    if (selected) setStaff(selected)
+  }, [selected])
 
-    return () => {
-      unsub?.()
-      clearInterval(interval)
+  const handleChange = (field: keyof Staff, value: string) => {
+    setStaff((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!staff.name || !staff.email || !staff.role) {
+      toast.error('Name, Email, and Role are required.')
+      return
     }
-  }, [])
-
-  // Filtered staff based on search and role
-  const filteredStaff = useMemo(() => {
-    return staffList.filter((s) => {
-      const matchRole = filterRole === 'All' || s.role === filterRole
-      const q = search.toLowerCase().trim()
-      const matchSearch =
-        !q ||
-        s.name.toLowerCase().includes(q) ||
-        s.email.toLowerCase().includes(q) ||
-        s.phone.includes(q)
-      return matchRole && matchSearch
+    onSubmit(staff)
+    setStaff({
+      id: undefined,
+      name: '',
+      age: '',
+      gender: 'Male',
+      email: '',
+      phone: '',
+      role: 'Admin',
+      department: '',
+      address: '',
     })
-  }, [staffList, search, filterRole])
-
-  const columns = [
-    { key: 'name', label: 'Name' },
-    { key: 'role', label: 'Role' },
-    { key: 'age', label: 'Age' },
-    { key: 'gender', label: 'Gender' },
-    { key: 'phone', label: 'Phone' },
-    { key: 'email', label: 'Email' },
-    { key: 'department', label: 'Department' },
-    { key: 'address', label: 'Address' },
-  ]
+  }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-gray-700">Clinic Staff</h1>
-        <OfflineStatus />
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-50 p-4 bg-gray-50 border rounded-lg shadow-sm space-y-4  w-full"
+    >
+      <h2 className="text-lg font-semibold text-gray-700">
+        {selected ? 'Edit Staff' : 'Add Staff'}
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-gray-600 mb-1">Name *</label>
+          <input
+            type="text"
+            value={staff.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 mb-1">Email *</label>
+          <input
+            type="email"
+            value={staff.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 mb-1">Phone</label>
+          <input
+            type="text"
+            value={staff.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 mb-1">Age</label>
+          <input
+            type="number"
+            value={staff.age}
+            onChange={(e) => handleChange('age', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 mb-1">Gender</label>
+          <select
+            value={staff.gender}
+            onChange={(e) => handleChange('gender', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          >
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-gray-600 mb-1">Role *</label>
+          <input
+            type="text"
+            value={staff.role}
+            onChange={(e) => handleChange('role', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 mb-1">Department</label>
+          <input
+            type="text"
+            value={staff.department}
+            onChange={(e) => handleChange('department', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-gray-600 mb-1">Address</label>
+          <textarea
+            value={staff.address}
+            onChange={(e) => handleChange('address', e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+            rows={2}
+          />
+        </div>
       </div>
 
-      {/* Search & Role Filter */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <input
-          className="border border-gray-300 text-gray-700 bg-white rounded px-3 py-1"
-          placeholder="Search by name, email, or phone..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          value={filterRole}
-          onChange={(e) => setFilterRole(e.target.value)}
-          className="border border-gray-300 text-gray-700 bg-white rounded px-3 py-1"
+      <div className="flex justify-end gap-2">
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          <option value="All">All Roles</option>
-          <option value="Doctor">Doctor</option>
-          <option value="Nurse">Nurse</option>
-          <option value="Admin">Admin</option>
-        </select>
+          {selected ? 'Update' : 'Add'} Staff
+        </button>
       </div>
-
-      {/* Staff Form */}
-      {service && (
-        <StaffForm
-          selected={selected ?? undefined}
-          onSubmit={(data: Staff) => {
-            service.saveStaff(data)
-            setSelected(null)
-          }}
-        />
-      )}
-
-      {/* Staff Table */}
-
-       {service && (
-               <StaffTable
-                 staff={staffList}
-                 service={service}
-                 onEdit={(p) => setSelected(p)}
-                 defaultRowsPerPage={10} // optional, default is 10
-               />
-             )}
-    
-    </div>
+    </form>
   )
 }
