@@ -18,7 +18,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
     gender: selected?.gender || 'Male',
     email: selected?.email || '',
     phone: selected?.phone || '',
-    role: selected?.role || 'Admin',
+    role: selected?.role || 'admin',
     department: selected?.department || '',
     address: selected?.address || '',
   })
@@ -45,7 +45,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
       gender: 'Male',
       email: '',
       phone: '',
-      role: 'Admin',
+      role: 'admin',
       department: '',
       address: '',
     })
