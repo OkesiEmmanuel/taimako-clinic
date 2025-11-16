@@ -1,158 +1,81 @@
 'use client'
 
-import { Staff } from '@/services/StaffService'
 import { useEffect, useState } from 'react'
+import { StaffService, Staff } from '@/services/StaffService'
+import StaffForm from './components/StaffForm'
 
-import { toast } from 'react-toastify'
+export default function StaffPage() {
+  const [staffList, setStaffList] = useState<Staff[]>([])
+  const [selected, setSelected] = useState<Staff | undefined>()
 
-interface StaffFormProps {
-  selected?: Staff
-  onSubmit: (data: Staff) => void
-}
-
-export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
-  const [staff, setStaff] = useState<Staff>({
-    id: selected?.id,
-    name: selected?.name || '',
-    age: selected?.age || '',
-    gender: selected?.gender || 'Male',
-    email: selected?.email || '',
-    phone: selected?.phone || '',
-    role: selected?.role || 'admin',
-    department: selected?.department || '',
-    address: selected?.address || '',
-  })
+  const service = new StaffService((list) => setStaffList(list))
 
   useEffect(() => {
-    if (selected) setStaff(selected)
-  }, [selected])
+    let unsubscribe: (() => void) | undefined
 
-  const handleChange = (field: keyof Staff, value: string) => {
-    setStaff((prev) => ({ ...prev, [field]: value }))
-  }
+    const init = async () => {
+      service.loadStaff()
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!staff.name || !staff.email || !staff.role) {
-      toast.error('Name, Email, and Role are required.')
-      return
+      // subscribeRealtime returns a promise → wait for it
+      const sub = await service.subscribeRealtime()
+      unsubscribe = sub
     }
-    onSubmit(staff)
-    setStaff({
-      id: undefined,
-      name: '',
-      age: '',
-      gender: 'Male',
-      email: '',
-      phone: '',
-      role: 'admin',
-      department: '',
-      address: '',
-    })
+
+    init()
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe()
+      }
+    }
+  }, [])
+
+  const handleSubmit = async (staff: Staff) => {
+    if (selected) {
+      await service.updateStaff(staff)
+      setSelected(undefined)
+    } else {
+      await service.saveStaff(staff, 'defaultPassword123')
+    }
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-gray-50 p-4 bg-gray-50 border rounded-lg shadow-sm space-y-4  w-full"
-    >
-      <h2 className="text-lg font-semibold text-gray-700">
-        {selected ? 'Edit Staff' : 'Add Staff'}
-      </h2>
+    <div className="p-6 space-y-6">
+      <StaffForm selected={selected} onSubmit={handleSubmit} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-gray-600 mb-1">Name *</label>
-          <input
-            type="text"
-            value={staff.name}
-            onChange={(e) => handleChange('name', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold mb-2">Staff List</h3>
 
-        <div>
-          <label className="block text-gray-600 mb-1">Email *</label>
-          <input
-            type="email"
-            value={staff.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
+        <div className="space-y-2">
+          {staffList.map((s) => (
+            <div
+              key={s.id}
+              className="border p-3 rounded flex justify-between items-center"
+            >
+              <div>
+                <p className="font-semibold">{s.name}</p>
+                <p className="text-sm text-gray-600">{s.role}</p>
+              </div>
 
-        <div>
-          <label className="block text-gray-600 mb-1">Phone</label>
-          <input
-            type="text"
-            value={staff.phone}
-            onChange={(e) => handleChange('phone', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setSelected(s)}
+                  className="px-3 py-1 bg-yellow-500 text-white rounded"
+                >
+                  Edit
+                </button>
 
-        <div>
-          <label className="block text-gray-600 mb-1">Age</label>
-          <input
-            type="number"
-            value={staff.age}
-            onChange={(e) => handleChange('age', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-600 mb-1">Gender</label>
-          <select
-            value={staff.gender}
-            onChange={(e) => handleChange('gender', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-gray-600 mb-1">Role *</label>
-          <input
-            type="text"
-            value={staff.role}
-            onChange={(e) => handleChange('role', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-600 mb-1">Department</label>
-          <input
-            type="text"
-            value={staff.department}
-            onChange={(e) => handleChange('department', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-gray-600 mb-1">Address</label>
-          <textarea
-            value={staff.address}
-            onChange={(e) => handleChange('address', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            rows={2}
-          />
+                <button
+                  onClick={() => service.deleteStaff(s.id)}
+                  className="px-3 py-1 bg-red-600 text-white rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-
-      <div className="flex justify-end gap-2">
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          {selected ? 'Update' : 'Add'} Staff
-        </button>
-      </div>
-    </form>
+    </div>
   )
 }
