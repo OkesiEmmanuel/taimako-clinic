@@ -54,7 +54,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-50 p-4 bg-gray-50 border rounded-lg shadow-sm space-y-4  w-full"
+      className="bg-gray-50 p-4 bg-gray-50  border rounded-lg shadow-sm space-y-4  w-full"
     >
       <h2 className="text-lg font-semibold text-gray-700">
         {selected ? 'Edit Staff' : 'Add Staff'}
@@ -67,7 +67,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
             type="text"
             value={staff.name}
             onChange={(e) => handleChange('name', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-600"
           />
         </div>
 
@@ -77,7 +77,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
             type="email"
             value={staff.email}
             onChange={(e) => handleChange('email', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-600"
           />
         </div>
 
@@ -87,7 +87,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
             type="text"
             value={staff.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-600"
           />
         </div>
 
@@ -106,7 +106,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
           <select
             value={staff.gender}
             onChange={(e) => handleChange('gender', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-600"
           >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -120,7 +120,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
             type="text"
             value={staff.role}
             onChange={(e) => handleChange('role', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-600"
           />
         </div>
 
@@ -130,7 +130,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
             type="text"
             value={staff.department}
             onChange={(e) => handleChange('department', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-600"
           />
         </div>
 
@@ -139,7 +139,7 @@ export default function StaffForm({ selected, onSubmit }: StaffFormProps) {
           <textarea
             value={staff.address}
             onChange={(e) => handleChange('address', e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-600"
             rows={2}
           />
         </div>
