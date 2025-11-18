@@ -45,7 +45,7 @@ export default function Sidebar() {
       </div>
 
       <div className="px-6 py-4 border-t">
-        <button className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition w-full">
+        <button className="flex items-center gap-2 text-gray-600 hover:text-red-500 w-full">
           <LogOut size={18} />
           Logout
         </button>
