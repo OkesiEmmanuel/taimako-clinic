@@ -76,14 +76,14 @@ export default function ReportForm({ onCreated }: Props) {
         value={title}
         onChange={e => setTitle(e.target.value)}
         placeholder="Report title"
-        className="border rounded px-2 py-1 w-full"
+        className="border rounded px-2 py-1 w-full text-gray-600"
         required
       />
       <textarea
         value={content}
         onChange={e => setContent(e.target.value)}
         placeholder="Report content"
-        className="border rounded px-2 py-1 w-full"
+        className="border rounded px-2 py-1 w-full text-gray-600"
         required
       />
       <input

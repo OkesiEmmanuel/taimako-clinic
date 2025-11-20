@@ -16,14 +16,8 @@ interface LinkItem {
 const links: LinkItem[] = [
   { label: 'Dashboard', href: '/staff', icon: <FiHome /> },
   {
-    label: 'Shifts',
-    icon: <FiClock />,
-    children: [
-      { label: 'My Shifts', href: '/staff/shifts' },
-      { label: 'Swap Requests', href: '/staff/shifts/swap-requests' },
-    ],
-  },
-  { label: 'Reports', href: '/staff/reports', icon: <FiFileText /> },
+    label: 'Shifts', icon: <FiClock />, href: '/staff/dashboard/shifts' },
+  { label: 'Reports', href: '/staff/dashboard/reports', icon: <FiFileText /> },
   { label: 'Profile', href: '/staff/profile', icon: <FiUser /> },
 ];
 

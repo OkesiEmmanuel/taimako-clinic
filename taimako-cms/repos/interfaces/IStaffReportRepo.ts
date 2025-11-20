@@ -1,5 +1,4 @@
-import { StaffReport } from "@/domain/entities/StaffLeave"
-
+import { StaffReport } from "@/domain/entities/StaffReport"
 
 export interface IStaffReportRepo {
   listByStaff(staff_id: string): Promise<StaffReport[]>

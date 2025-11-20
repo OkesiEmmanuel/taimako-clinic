@@ -49,7 +49,7 @@ export class UserRepoSupabase implements IUserRepo {
   async listStaff(): Promise<User[]> {
     const staffRoles: Role[] = ['doctor', 'nurse', 'reception', 'accountant'];
     const { data, error } = await supabase
-      .from('users')
+      .from('staff')
       .select('*')
       .in('role', staffRoles);
     if (error) throw error;
@@ -61,7 +61,7 @@ export class UserRepoSupabase implements IUserRepo {
     if (!validRoles.includes(role)) throw new Error('Invalid role');
 
     const { data, error } = await supabase
-      .from('users')
+      .from('staff')
       .update({ role })
       .eq('id', id)
       .select()
@@ -72,7 +72,7 @@ export class UserRepoSupabase implements IUserRepo {
 
   async delete(id: string): Promise<void> {
     const { error } = await supabase
-      .from('users')
+      .from('staff')
       .delete()
       .eq('id', id);
     if (error) throw error;

@@ -41,17 +41,7 @@ export default function StaffDashboard() {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-semibold text-gray-700">Staff Management</h1>
 
-      <StaffForm
-        selected={selectedStaff ?? undefined}
-        onSubmit={async (staff: Staff) => {
-          // Prompt for password only if creating new staff
-          let password: string | undefined = undefined
-          if (!staff.id) {
-            password = prompt('Enter password for new staff') || undefined
-          }
-          await handleSaveStaff(staff, password)
-        }}
-      />
+     
 
       <div className="mt-6">
         <h2 className="text-lg font-semibold text-gray-700 mb-2">Staff List</h2>

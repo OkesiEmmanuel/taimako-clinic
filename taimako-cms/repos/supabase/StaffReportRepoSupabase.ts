@@ -1,6 +1,7 @@
-import { StaffReport } from '@/domain/entities/StaffLeave'
+
 import { supabase } from '@/lib/supabaseClient'
 import { IStaffReportRepo } from '../interfaces/IStaffReportRepo'
+import { StaffReport } from '@/domain/entities/StaffReport'
 
 export class StaffReportRepoSupabase implements IStaffReportRepo {
   private static instance: StaffReportRepoSupabase

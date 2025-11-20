@@ -1,5 +1,4 @@
-import { StaffShift } from "@/domain/entities/StaffLeave"
-import { ShiftSwapRequest } from "@/domain/entities/StaffShifts"
+import { ShiftSwapRequest, StaffShift } from "@/domain/entities/StaffShifts"
 
 export interface IShiftRepo {
   listByStaff(staff_id: string): Promise<StaffShift[]>
