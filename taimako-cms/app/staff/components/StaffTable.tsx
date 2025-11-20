@@ -168,12 +168,12 @@ export default function StaffTable({
                   >
                     Delete
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => service.printStaff(s)}
                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition"
                   >
                     Print
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}
@@ -203,7 +203,7 @@ export default function StaffTable({
           </button>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
+        {/* <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => service.printAll(filtered)}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
@@ -216,7 +216,7 @@ export default function StaffTable({
           >
             Export CSV
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   )

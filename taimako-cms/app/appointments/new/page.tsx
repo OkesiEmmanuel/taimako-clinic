@@ -9,9 +9,9 @@ export default function NewAppointmentPage() {
   const [startAt, setStartAt] = useState('2025-11-10T09:00')
   const [endAt, setEndAt] = useState('2025-11-10T09:30')
   const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState(null)
+  const [message, setMessage] = useState<string | null>(null)
 
-  async function book(e) {
+  async function book(e:any) {
     e.preventDefault()
     setLoading(true)
     setMessage(null)
@@ -32,8 +32,8 @@ export default function NewAppointmentPage() {
       const data = await res.json()
       if (!res.ok) throw new Error(data?.message || 'Error')
       setMessage('Appointment created: ' + data.id)
-    } catch (err) {
-      setMessage(err.message)
+    } catch (err: any) {
+      setMessage(err?.message ?? String(err))
     } finally {
       setLoading(false)
     }
